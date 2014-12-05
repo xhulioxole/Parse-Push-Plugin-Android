@@ -1,4 +1,4 @@
-package com.phonegap.plugins;
+package org.apache.cordova.core;
 
 import java.util.List;
 import java.lang.Exception;

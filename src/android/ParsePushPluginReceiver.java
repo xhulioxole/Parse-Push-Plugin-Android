@@ -1,4 +1,4 @@
-package com.phonegap.plugins;
+package org.apache.cordova.core;
 
 import com.parse.ParsePushBroadcastReceiver;
 import com.parse.ParseAnalytics;
