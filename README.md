@@ -7,8 +7,6 @@ Phonegap 3.x plugin for Parse.com push service.
 makes it fairly useless for PN in Phonegap/Cordova. This plugin bridges the gap by leveraging native Parse.com SDKs
 to register/receive PNs and allow a few essential methods to be accessible from Javascript. 
 
-_Please note that I've only worked on the Android aspect of this fork. The iOS side is not yet up to date._
-
 For Android, Parse SDK v1.7.1 is used. This means GCM support and no more background process `PushService` unnecessarily
 taps device battery to duplicate what GCM already provides.
 
@@ -25,8 +23,7 @@ Installation
 Pick one of these two commands:
 
 ```
-phonegap local plugin add https://github.com/taivo/parse-push-plugin
-cordova plugin add https://github.com/taivo/parse-push-plugin
+cordova plugin add https://github.com/4ndywilliamson/Parse-Push-Plugin-Android
 ```
 
 ####Android devices without Google Cloud Messaging:
@@ -86,9 +83,8 @@ After successful registration, you can call any of the other available methods.
 
 ```javascript
 <script type="text/javascript">
-	ParsePushPlugin.register({
-	appId:"PARSE_APPID", clientKey:"PARSE_CLIENT_KEY", ecb:"onNotification"}, 
-	function() {
+
+	ParsePushPlugin.register({ appId:"PARSE_APPID", clientKey:"PARSE_CLIENT_KEY", ecb:"onNotification"}, function() {
 		alert('successfully registered device!');
 		doWhatever();
 	}, function(e) {
@@ -124,6 +120,7 @@ After successful registration, you can call any of the other available methods.
 	function onNotification(pnObj){
     	alert("received pn: " + JSON.stringify(pnObj));
 	}
+    
 </script>
 ```
 

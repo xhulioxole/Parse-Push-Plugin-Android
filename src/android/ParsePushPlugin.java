@@ -17,6 +17,7 @@ import com.parse.ParsePush;
 import android.util.Log;
 
 public class ParsePushPlugin extends CordovaPlugin {
+    
     public static final String ACTION_REGISTER = "register";
     public static final String ACTION_GET_INSTALLATION_ID = "getInstallationId";
     public static final String ACTION_GET_INSTALLATION_OBJECT_ID = "getInstallationObjectId";
@@ -25,6 +26,7 @@ public class ParsePushPlugin extends CordovaPlugin {
     public static final String ACTION_UNSUBSCRIBE = "unsubscribe";
     
     private static CordovaWebView gWebView;
+    
     private static String gECB;
     
     public static final String LOGTAG = "ParsePushPlugin";
@@ -122,6 +124,7 @@ public class ParsePushPlugin extends CordovaPlugin {
     /*
     * Use the cordova bridge to call the jsCB and pass it _json as param
     */
+    
     public static void javascriptECB(JSONObject _json){
     	String snippet = "javascript:" + gECB + "(" + _json.toString() + ")";
     	Log.v(LOGTAG, "javascriptCB: " + snippet);
