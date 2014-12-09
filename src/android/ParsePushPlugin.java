@@ -10,6 +10,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
+
 import com.parse.Parse;
 import com.parse.ParseInstallation;
 import com.parse.ParsePush;
@@ -24,7 +30,8 @@ public class ParsePushPlugin extends CordovaPlugin {
     public static final String ACTION_GET_SUBSCRIPTIONS = "getSubscriptions";
     public static final String ACTION_SUBSCRIBE = "subscribe";
     public static final String ACTION_UNSUBSCRIBE = "unsubscribe";
-    
+    public static final String ACTION_RECEIVED = "received";
+        
     private static CordovaWebView gWebView;
     
     private static String gECB;
@@ -56,6 +63,10 @@ public class ParsePushPlugin extends CordovaPlugin {
         }
         if (action.equals(ACTION_UNSUBSCRIBE)) {
             this.unsubscribe(args.getString(0), callbackContext);
+            return true;
+        }
+        if (action.equals(ACTION_RECEIVED)) {
+            this.received(callbackContext);
             return true;
         }
         return false;
@@ -121,12 +132,45 @@ public class ParsePushPlugin extends CordovaPlugin {
         callbackContext.success();
     }
     
-    /*
-    * Use the cordova bridge to call the jsCB and pass it _json as param
-    */
+    //
+    //
     
-    public static void javascriptECB(JSONObject _json){
+    private void received(final CallbackContext callbackContext) {
+        
+        Context myContext = cordova.getActivity();
+
+        String data = policyData(myContext);
+        
+        callbackContext.success(data);
+        
+    }
+    
+    //
+    //
+    
+    public static String policyData(Context context) {
+                            
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        
+        String pushDataString = preferences.getString("PUSHDATA", "");
+        
+        Log.e(LOGTAG, pushDataString);
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("PUSHDATA", ""); // Storing string
+        editor.commit(); // Commit changes
+
+        return pushDataString;
+        
+    }
+    
+    //
+    // Use the cordova bridge to call the jsCB and pass it _json as param
+    
+    public static void javascriptECB (JSONObject _json) {
+        
     	String snippet = "javascript:" + gECB + "(" + _json.toString() + ")";
+        
     	Log.v(LOGTAG, "javascriptCB: " + snippet);
     	
     	if (gECB != null && !gECB.isEmpty() && gWebView != null) gWebView.sendJavascript(snippet);

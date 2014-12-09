@@ -56,6 +56,7 @@ your app to crash. Continue with steps 3 & 4 to fix this.
 We'll need to define an application class to override the default `onCreate` behavior and call `Parse.initialize()`
 so the crash described above does not occur. In your application's Java source path, e.g., `platforms/android/src/com/example/app`, create a file
 named MainApplication.java and define it this way
+
     ```java
     package com.example.app;  //REPLACE THIS WITH YOUR package name
 
@@ -71,6 +72,7 @@ named MainApplication.java and define it this way
         }
     }
     ```
+    
 4. The final step is to register MainApplication in AndroidManifest.xml so it's used instead of the default.
 In the `<application>` tag, add the attribute `android:name="MainApplication"`. Obviously, you don't have
 to name your application class this way, but you have to use the same name in 3 and 4. 

@@ -5,8 +5,13 @@ import com.parse.ParseAnalytics;
 
 import android.app.Activity;
 import android.app.TaskStackBuilder;
+
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
+
 import android.os.Build;
 import android.net.Uri;
 import android.util.Log;
@@ -25,8 +30,11 @@ public class ParsePushPluginReceiver extends ParsePushBroadcastReceiver
         
 		JSONObject pushData = getPushData(intent);
         
+        //
+        //
 		if(pushData != null) ParsePushPlugin.javascriptECB( pushData );
-        
+        //
+        //
 	}
 	
 	@Override
@@ -36,12 +44,27 @@ public class ParsePushPluginReceiver extends ParsePushBroadcastReceiver
 		// Note: preempt a Parse Android SDK bug observed in 1.7.0 and 1.7.1
 		// where empty/null uri string causes crash
 		//
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                
+        //
+        //
         
         ParseAnalytics.trackAppOpenedInBackground(intent);
 
         JSONObject pushData = getPushData(intent);
-        
+                
+        String pushDataString = pushData.toString();
         String uriString = pushData.optString("uri");
+        
+        //
+        //
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("PUSHDATA", pushDataString); // Storing string
+        editor.commit(); // Commit changes
+        
+        //
         
         Class<? extends Activity> cls = getActivity(context, intent);
         
@@ -65,6 +88,7 @@ public class ParsePushPluginReceiver extends ParsePushBroadcastReceiver
             activityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             context.startActivity(activityIntent);
         }
+
     }
 	
 	private static JSONObject getPushData(Intent intent){
