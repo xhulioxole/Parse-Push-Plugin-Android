@@ -1,30 +1,29 @@
-Phonegap Parse.com Plugin
+Cordova Parse.com Plugin
 =========================
 
-Phonegap 3.x plugin for Parse.com push service.
+Cordova v3+ plugin for Parse.com push (Android SDK v1.8.0)
 
 [Parse.com's](http://parse.com) Javascript API has no mechanism to register a device for or receive push notifications, which
 makes it fairly useless for PN in Phonegap/Cordova. This plugin bridges the gap by leveraging native Parse.com SDKs
 to register/receive PNs and allow a few essential methods to be accessible from Javascript. 
 
-For Android, Parse SDK v1.7.1 is used. This means GCM support and no more background process `PushService` unnecessarily
+For Android, Parse SDK v1.8.0 is used. This means GCM support and no more background process `PushService` unnecessarily
 taps device battery to duplicate what GCM already provides.
 
 This plugin exposes the four native Android API push services to JS:
-* **register**( options, successCB, errorCB )   -- register the device + a JS event callback (when a PN is received)
-* **getInstallationId**( successCB, errorCB )
-* **getSubscriptions**( successCB, errorCB )
-* **subscribe**( channel, successCB, errorCB )
-* **unsubscribe**( channel, successCB, errorCB )
+* **register**( options, successCallback, errorCallback )   -- register the device + a JS event callback (when a PN is received)
+* **getInstallationId**( successCallback, errorCallback )
+* **getSubscriptions**( successCallback, errorCallback )
+* **subscribe**( channel, successCallback, errorCallback )
+* **unsubscribe**( channel, successCallback, errorCallback )
+* **received**( successCallback, errorCallback )
 
 Installation
 ------------
 
-Pick one of these two commands:
-
-```
-cordova plugin add https://github.com/4ndywilliamson/Parse-Push-Plugin-Android
-```
+    ```
+    cordova plugin add https://github.com/4ndywilliamson/Parse-Push-Plugin-Android
+    ```
 
 ####Android devices without Google Cloud Messaging:
 If you only care about GCM devices, you're good to go. Move on to the [Usage](#usage) section. 
@@ -62,13 +61,15 @@ named MainApplication.java and define it this way
 
     import android.app.Application;
     import com.parse.Parse;
+    import com.parse.ParseCrashReporting;
 
     public class MainApplication extends Application {
 	    @Override
         public void onCreate() {
             super.onCreate();
+
+            ParseCrashReporting.enable(this);
             Parse.initialize(this, "YOUR_PARSE_APPID", "YOUR_PARSE_CLIENT_KEY");
-            //ParseInstallation.getCurrentInstallation().saveInBackground();
         }
     }
     ```
@@ -83,48 +84,89 @@ Once the device is ready, call ```ParsePushPlugin.register()```. This will regis
 You can optionally specify an event callback to be invoked when a push notification is received.
 After successful registration, you can call any of the other available methods.
 
-```javascript
-<script type="text/javascript">
+    ```javascript
+    <script type="text/javascript">
 
-	ParsePushPlugin.register({ appId:"PARSE_APPID", clientKey:"PARSE_CLIENT_KEY", ecb:"onNotification"}, function() {
-		alert('successfully registered device!');
-		doWhatever();
-	}, function(e) {
-		alert('error registering device: ' + e);
-	});
-	
-	function doWhatever(){
+    //
+    // Registers the device for push
+
+    function registerForParsePush() {
+        ParsePushPlugin.register({ appId:"PARSE_APPID", clientKey:"PARSE_CLIENT_KEY", ecb:"onNotification"}, function() {
+            console.log('Successfully registered device!');
+            getInstallationData();
+            getPushNotificationData();
+        }, function(e) {
+            console.log('Error registering device: ' + e);
+        });
+    }
+       
+    //
+    // Retrieves the Parse.com push installation ID
+
+    function getInstallationData() {
 	    ParsePushPlugin.getInstallationId(function(id) {
-		    alert(id);
+		    console.log(id);
 	    }, function(e) {
-		    alert('error');
+		    console.log('Error');
 	    });
-	    
-	    ParsePushPlugin.getSubscriptions(function(subscriptions) {
-		    alert(subscriptions);
+    }
+    
+    //
+    // Gets all Channels
+    
+    function getAllSubscriptionsData() {
+        ParsePushPlugin.getSubscriptions(function(subscriptions) {
+		    console.log(subscriptions);
 	    }, function(e) {
-		    alert('error');
+		    console.log('Error');
 	    });
+    }
 	
-	    ParsePushPlugin.subscribe('SampleChannel', function() {
-		    alert('OK');
+    //
+    // Adds a Channel
+    
+    function subscribePushNotification() {
+	    ParsePushPlugin.subscribe('Channel', function() {
+		    console.log('OK');
 	    }, function(e) {
-		    alert('error');
+		    console.log('Error');
 	    });
-	
-	    ParsePushPlugin.unsubscribe('SampleChannel', function(msg) {
-		    alert('OK');
+    }
+    
+    //
+    // Removes a Channel
+    
+    function unsubscribePushNotification() {
+	    ParsePushPlugin.unsubscribe('Channel', function(msg) {
+		    console.log('OK');
 	    }, function(e) {
-		    alert('error');
-	    });
+		    console.log('Error');
+	    });    
 	}
-	
-	function onNotification(pnObj){
-    	alert("received pn: " + JSON.stringify(pnObj));
+
+    //
+    // Gets the push notification payload data when the app opens from a push notification
+
+    function getPushNotificationData() {
+        ParsePushPlugin.received(function(data) {
+            if (data.length > 0) {
+                notificationPayload(JSON.parse(data));
+                console.log('Successfully Obtained Push Data: ' + data);
+            }
+        }, function(e) { 
+            console.log('Error Obtaining Push Data: ' + e);
+        });
+    }
+
+    //
+    // Gets the push notification payload data when a push is sent whilst in the app, ParsePushPlugin.register sets up the callback
+    
+	function onNotification(data){
+    	console.log("Received pn: " + JSON.stringify(data));
 	}
     
-</script>
-```
+    </script>
+    ```
 
 Silent Notifications
 --------------------
@@ -135,4 +177,4 @@ do whatever processing needed on the other fields of the payload.
 
 Compatibility
 -------------
-Phonegap > 3.0.0
+Cordova v3+
