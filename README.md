@@ -21,7 +21,9 @@ This plugin exposes the four native Android API push services to JS:
 Installation
 ------------
 
-    cordova plugin add https://github.com/4ndywilliamson/Parse-Push-Plugin-Android
+```
+cordova plugin add https://github.com/4ndywilliamson/Parse-Push-Plugin-Android
+```
 
 ####Android devices without Google Cloud Messaging:
 If you only care about GCM devices, you're good to go. Move on to the [Usage](#usage) section. 
@@ -31,19 +33,22 @@ must be setup to work properly. My guess is this receiver takes care of establis
 handle push notifications without GCM. Follow these steps for `ParseBroadcastReceiver` setup:
 
 1. Add the following to your AndroidManifest.xml, inside the `<application>` tag
-    ```xml
-    <receiver android:name="com.parse.ParseBroadcastReceiver">
-       <intent-filter>
-          <action android:name="android.intent.action.BOOT_COMPLETED" />
-          <action android:name="android.intent.action.USER_PRESENT" />
-       </intent-filter>
-    </receiver>
-    ```
+
+```xml
+<receiver android:name="com.parse.ParseBroadcastReceiver">
+   <intent-filter>
+      <action android:name="android.intent.action.BOOT_COMPLETED" />
+      <action android:name="android.intent.action.USER_PRESENT" />
+   </intent-filter>
+</receiver>
+```
     
 2. Add the following permission to AndroidManifest.xml, as a sibling of the `<application>` tag
-    ```xml
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    ```
+
+```xml
+<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+```
+
 On the surface, step 1 & 2 should be enough. However, when one of the actions `BOOT_COMPLETED` or
 `USER_PRESENT` (on screen unlock) occurs, `ParseBroadastReceiver` gets invoked well before your Javascript
 code or this plugin's Java code gets a chance to call `Parse.initialize()`. The Parse SDK then barfs, causing
@@ -54,21 +59,23 @@ We'll need to define an application class to override the default `onCreate` beh
 so the crash described above does not occur. In your application's Java source path, e.g., `platforms/android/src/com/example/app`, create a file
 named MainApplication.java and define it this way
 
-    package com.example.app;  //REPLACE THIS WITH YOUR package name
+```
+package com.example.app;  //REPLACE THIS WITH YOUR package name
 
-    import android.app.Application;
-    import com.parse.Parse;
-    import com.parse.ParseCrashReporting;
+import android.app.Application;
+import com.parse.Parse;
+import com.parse.ParseCrashReporting;
 
-    public class MainApplication extends Application {
-	    @Override
-        public void onCreate() {
-            super.onCreate();
+public class MainApplication extends Application {
+    @Override
+    public void onCreate() {
+        super.onCreate();
 
-            ParseCrashReporting.enable(this);
-            Parse.initialize(this, "YOUR_PARSE_APPID", "YOUR_PARSE_CLIENT_KEY");
-        }
+        ParseCrashReporting.enable(this);
+        Parse.initialize(this, "YOUR_PARSE_APPID", "YOUR_PARSE_CLIENT_KEY");
     }
+}
+```
     
 4. The final step is to register MainApplication in AndroidManifest.xml so it's used instead of the default.
 In the `<application>` tag, add the attribute `android:name="MainApplication"`. Obviously, you don't have
@@ -80,87 +87,89 @@ Once the device is ready, call ```ParsePushPlugin.register()```. This will regis
 You can optionally specify an event callback to be invoked when a push notification is received.
 After successful registration, you can call any of the other available methods.
 
-    <script type="text/javascript">
+```
+<script type="text/javascript">
 
-    //
-    // Registers the device for push
+//
+// Registers the device for push
 
-    function registerForParsePush() {
-        ParsePushPlugin.register({ appId:"PARSE_APPID", clientKey:"PARSE_CLIENT_KEY", ecb:"onNotification"}, function() {
-            console.log('Successfully registered device!');
-            getInstallationData();
-            getPushNotificationData();
-        }, function(e) {
-            console.log('Error registering device: ' + e);
-        });
-    }
-       
-    //
-    // Retrieves the Parse.com push installation ID
+function registerForParsePush() {
+    ParsePushPlugin.register({ appId:"PARSE_APPID", clientKey:"PARSE_CLIENT_KEY", ecb:"onNotification"}, function() {
+        console.log('Successfully registered device!');
+        getInstallationData();
+        getPushNotificationData();
+    }, function(e) {
+        console.log('Error registering device: ' + e);
+    });
+}
 
-    function getInstallationData() {
-	    ParsePushPlugin.getInstallationId(function(id) {
-		    console.log(id);
-	    }, function(e) {
-		    console.log('Error');
-	    });
-    }
-    
-    //
-    // Gets all Channels
-    
-    function getAllSubscriptionsData() {
-        ParsePushPlugin.getSubscriptions(function(subscriptions) {
-		    console.log(subscriptions);
-	    }, function(e) {
-		    console.log('Error');
-	    });
-    }
-	
-    //
-    // Adds a Channel
-    
-    function subscribePushNotification() {
-	    ParsePushPlugin.subscribe('Channel', function() {
-		    console.log('OK');
-	    }, function(e) {
-		    console.log('Error');
-	    });
-    }
-    
-    //
-    // Removes a Channel
-    
-    function unsubscribePushNotification() {
-	    ParsePushPlugin.unsubscribe('Channel', function(msg) {
-		    console.log('OK');
-	    }, function(e) {
-		    console.log('Error');
-	    });    
-	}
+//
+// Retrieves the Parse.com push installation ID
 
-    //
-    // Gets the push notification payload data when the app opens from a push notification
+function getInstallationData() {
+    ParsePushPlugin.getInstallationId(function(id) {
+        console.log(id);
+    }, function(e) {
+        console.log('Error');
+    });
+}
 
-    function getPushNotificationData() {
-        ParsePushPlugin.received(function(data) {
-            if (data.length > 0) {
-                notificationPayload(JSON.parse(data));
-                console.log('Successfully Obtained Push Data: ' + data);
-            }
-        }, function(e) { 
-            console.log('Error Obtaining Push Data: ' + e);
-        });
-    }
+//
+// Gets all Channels
 
-    //
-    // Gets the push notification payload data when a push is sent whilst in the app, ParsePushPlugin.register sets up the callback
-    
-	function onNotification(data){
-    	console.log("Received pn: " + JSON.stringify(data));
-	}
-    
-    </script>
+function getAllSubscriptionsData() {
+    ParsePushPlugin.getSubscriptions(function(subscriptions) {
+        console.log(subscriptions);
+    }, function(e) {
+        console.log('Error');
+    });
+}
+
+//
+// Adds a Channel
+
+function subscribePushNotification() {
+    ParsePushPlugin.subscribe('Channel', function() {
+        console.log('OK');
+    }, function(e) {
+        console.log('Error');
+    });
+}
+
+//
+// Removes a Channel
+
+function unsubscribePushNotification() {
+    ParsePushPlugin.unsubscribe('Channel', function(msg) {
+        console.log('OK');
+    }, function(e) {
+        console.log('Error');
+    });    
+}
+
+//
+// Gets the push notification payload data when the app opens from a push notification
+
+function getPushNotificationData() {
+    ParsePushPlugin.received(function(data) {
+        if (data.length > 0) {
+            notificationPayload(JSON.parse(data));
+            console.log('Successfully Obtained Push Data: ' + data);
+        }
+    }, function(e) { 
+        console.log('Error Obtaining Push Data: ' + e);
+    });
+}
+
+//
+// Gets the push notification payload data when a push is sent whilst in the app, ParsePushPlugin.register sets up the callback
+
+function onNotification(data){
+    console.log("Received pn: " + JSON.stringify(data));
+}
+
+</script>
+```
 
 Silent Notifications
 --------------------
