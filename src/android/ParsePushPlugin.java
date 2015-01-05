@@ -17,8 +17,8 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
 import com.parse.Parse;
-import com.parse.ParseInstallation;
 import com.parse.ParsePush;
+import com.parse.ParseInstallation;
 
 import android.util.Log;
 
@@ -74,20 +74,29 @@ public class ParsePushPlugin extends CordovaPlugin {
 
     private void registerDevice(final CallbackContext callbackContext, final JSONArray args) {
     	try {
+            
+            Log.e(LOGTAG, "Loading Parse Push v1.8.0");
+
+            //
+            //
+            
         	JSONObject jo = args.getJSONObject(0);
             String appId = jo.getString("appId");
             String clientKey = jo.getString("clientKey");
             
         	//
-        	// initialize Parse
+        	// Initialize Parse
+            
             Parse.initialize(cordova.getActivity(), appId, clientKey);
             ParseInstallation.getCurrentInstallation().saveInBackground();
             
             //
-            // register callbacks for notification events
+            // Register callbacks for notification events
+            
             gECB = jo.optString("ecb");
             
             callbackContext.success();
+            
         } catch (JSONException e) {
             callbackContext.error("JSONException: " + e.toString());
         } catch(Exception e){
@@ -174,18 +183,26 @@ public class ParsePushPlugin extends CordovaPlugin {
     	Log.v(LOGTAG, "javascriptCB: " + snippet);
     	
     	if (gECB != null && !gECB.isEmpty() && gWebView != null) gWebView.sendJavascript(snippet);
+        
     }
+    
+    //
+    //
     
     @Override
     protected void pluginInitialize() {
+        
     	gECB = null;
     	gWebView = this.webView;
+    
     }
     
     @Override
     public void onDestroy() {
-    	super.onDestroy();
+    
+        super.onDestroy();
     	gECB = null;
     	gWebView = null;
+    
     }
 }

@@ -32,19 +32,14 @@ public class ParsePushPluginReceiver extends ParsePushBroadcastReceiver
         
         //
         //
+        
 		if(pushData != null) ParsePushPlugin.javascriptECB( pushData );
-        //
-        //
-	}
+        
+    }
 	
 	@Override
     protected void onPushOpen(Context context, Intent intent) {
         
-		//
-		// Note: preempt a Parse Android SDK bug observed in 1.7.0 and 1.7.1
-		// where empty/null uri string causes crash
-		//
-
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                 
         //
