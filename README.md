@@ -21,9 +21,7 @@ This plugin exposes the four native Android API push services to JS:
 Installation
 ------------
 
-    ```
     cordova plugin add https://github.com/4ndywilliamson/Parse-Push-Plugin-Android
-    ```
 
 ####Android devices without Google Cloud Messaging:
 If you only care about GCM devices, you're good to go. Move on to the [Usage](#usage) section. 
@@ -56,7 +54,6 @@ We'll need to define an application class to override the default `onCreate` beh
 so the crash described above does not occur. In your application's Java source path, e.g., `platforms/android/src/com/example/app`, create a file
 named MainApplication.java and define it this way
 
-    ```java
     package com.example.app;  //REPLACE THIS WITH YOUR package name
 
     import android.app.Application;
@@ -72,7 +69,6 @@ named MainApplication.java and define it this way
             Parse.initialize(this, "YOUR_PARSE_APPID", "YOUR_PARSE_CLIENT_KEY");
         }
     }
-    ```
     
 4. The final step is to register MainApplication in AndroidManifest.xml so it's used instead of the default.
 In the `<application>` tag, add the attribute `android:name="MainApplication"`. Obviously, you don't have
@@ -84,7 +80,6 @@ Once the device is ready, call ```ParsePushPlugin.register()```. This will regis
 You can optionally specify an event callback to be invoked when a push notification is received.
 After successful registration, you can call any of the other available methods.
 
-    ```javascript
     <script type="text/javascript">
 
     //
@@ -166,7 +161,6 @@ After successful registration, you can call any of the other available methods.
 	}
     
     </script>
-    ```
 
 Silent Notifications
 --------------------
