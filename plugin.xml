@@ -17,7 +17,7 @@
             </feature>
         </config-file>
         
-        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+        <config-file target="AndroidManifest.xml" parent="/manifest/application" name="com.priusolution.ParseInit">
           <service android:name="com.parse.PushService" />
           <receiver android:exported="false" android:name="org.apache.cordova.core.ParsePushPluginReceiver">
             <intent-filter>
@@ -34,6 +34,7 @@
               <category android:name="$PACKAGE_NAME" />
             </intent-filter>
           </receiver>
+            <meta-data android:name="com.parse.push.notification_icon" android:resource="@drawable/push_icon" />
         </config-file>
         
         <config-file target="AndroidManifest.xml" parent="/manifest">
@@ -51,7 +52,7 @@
         <source-file src="src/android/parse-1.8.0/ParseCrashReporting-1.8.0.jar" target-dir="libs" framework="true" />
         <source-file src="src/android/parse-1.8.0/bolts-android-1.1.4.jar" target-dir="libs" framework="true" />
         <source-file src="src/android/ParsePushPlugin.java" target-dir="src/org/apache/cordova/core" />
-        <source-file src="src/android/ParsePushPluginReceiver.java" target-dir="src/org/apache/cordova/core" />      
+        <source-file src="src/android/ParsePushPluginReceiver.java" target-dir="src/org/apache/cordova/core" />
      </platform>
 
 </plugin>
