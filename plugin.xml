@@ -17,24 +17,26 @@
             </feature>
         </config-file>
         
-        <config-file target="AndroidManifest.xml" parent="/manifest/application" name="com.priusolution.ParseInit">
-          <service android:name="com.parse.PushService" />
-          <receiver android:exported="false" android:name="org.apache.cordova.core.ParsePushPluginReceiver">
-            <intent-filter>
-                <action android:name="com.parse.push.intent.RECEIVE" />
-                <action android:name="com.parse.push.intent.DELETE" />
-                <action android:name="com.parse.push.intent.OPEN" />
-            </intent-filter>
-          </receiver>
-          <receiver android:name="com.parse.GcmBroadcastReceiver"
-              android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-              <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-              <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-              <category android:name="$PACKAGE_NAME" />
-            </intent-filter>
-          </receiver>
-            <meta-data android:name="com.parse.push.notification_icon" android:resource="@drawable/push_icon" />
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <application android:name="com.priusolution.ParseInit">
+                <service android:name="com.parse.PushService" />
+                <receiver android:exported="false" android:name="org.apache.cordova.core.ParsePushPluginReceiver">
+                    <intent-filter>
+                        <action android:name="com.parse.push.intent.RECEIVE" />
+                        <action android:name="com.parse.push.intent.DELETE" />
+                        <action android:name="com.parse.push.intent.OPEN" />
+                    </intent-filter>
+                </receiver>
+                <receiver android:name="com.parse.GcmBroadcastReceiver"
+                          android:permission="com.google.android.c2dm.permission.SEND">
+                    <intent-filter>
+                        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                        <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+                        <category android:name="$PACKAGE_NAME" />
+                    </intent-filter>
+                </receiver>
+                <meta-data android:name="com.parse.push.notification_icon" android:resource="@drawable/push_icon" />
+            </application>
         </config-file>
         
         <config-file target="AndroidManifest.xml" parent="/manifest">
