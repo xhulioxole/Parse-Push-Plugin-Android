@@ -13,6 +13,7 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.os.Build;
 import android.net.Uri;
+import android.util.Log;
 import org.json.JSONObject;
 import org.json.JSONException;
 import com.priusolution.infostranieri.R; // @TODO - For the moment change it when used on another project until is found a better solution
