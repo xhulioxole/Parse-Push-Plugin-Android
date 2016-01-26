@@ -31,11 +31,8 @@ public class ParsePushPlugin extends CordovaPlugin {
     public static final String ACTION_SUBSCRIBE = "subscribe";
     public static final String ACTION_UNSUBSCRIBE = "unsubscribe";
     public static final String ACTION_RECEIVED = "received";
-        
     private static CordovaWebView gWebView;
-    
     private static String gECB;
-    
     public static final String LOGTAG = "ParsePushPlugin";
 
     @Override
@@ -74,29 +71,14 @@ public class ParsePushPlugin extends CordovaPlugin {
 
     private void registerDevice(final CallbackContext callbackContext, final JSONArray args) {
     	try {
-            
             Log.e(LOGTAG, "Loading Parse Push v1.8.0");
-
-            //
-            //
-            
         	JSONObject jo = args.getJSONObject(0);
             String appId = jo.getString("appId");
             String clientKey = jo.getString("clientKey");
-            
-        	//
-        	// Initialize Parse
-            
             Parse.initialize(cordova.getActivity(), appId, clientKey);
             ParseInstallation.getCurrentInstallation().saveInBackground();
-            
-            //
-            // Register callbacks for notification events
-            
             gECB = jo.optString("ecb");
-            
             callbackContext.success();
-            
         } catch (JSONException e) {
             callbackContext.error("JSONException: " + e.toString());
         } catch(Exception e){
@@ -140,69 +122,40 @@ public class ParsePushPlugin extends CordovaPlugin {
     	ParsePush.unsubscribeInBackground(channel);
         callbackContext.success();
     }
-    
-    //
-    //
-    
+
     private void received(final CallbackContext callbackContext) {
-        
         Context myContext = cordova.getActivity();
-
         String data = policyData(myContext);
-        
         callbackContext.success(data);
-        
     }
-    
-    //
-    //
-    
-    public static String policyData(Context context) {
-                            
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        
-        String pushDataString = preferences.getString("PUSHDATA", "");
-        
-        Log.e(LOGTAG, pushDataString);
 
+    public static String policyData(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String pushDataString = preferences.getString("PUSHDATA", "");
+        Log.e(LOGTAG, pushDataString);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("PUSHDATA", ""); // Storing string
         editor.commit(); // Commit changes
-
         return pushDataString;
         
     }
     
-    //
-    // Use the cordova bridge to call the jsCB and pass it _json as param
-    
     public static void javascriptECB (JSONObject _json) {
-        
     	String snippet = "javascript:" + gECB + "(" + _json.toString() + ")";
-        
     	Log.v(LOGTAG, "javascriptCB: " + snippet);
-    	
     	if (gECB != null && !gECB.isEmpty() && gWebView != null) gWebView.sendJavascript(snippet);
-        
     }
-    
-    //
-    //
     
     @Override
     protected void pluginInitialize() {
-        
     	gECB = null;
     	gWebView = this.webView;
-    
     }
     
     @Override
     public void onDestroy() {
-    
         super.onDestroy();
     	gECB = null;
     	gWebView = null;
-    
     }
 }

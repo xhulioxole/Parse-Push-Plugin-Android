@@ -2,22 +2,19 @@ package org.apache.cordova.core;
 
 import com.parse.ParsePushBroadcastReceiver;
 import com.parse.ParseAnalytics;
-
 import android.app.Activity;
 import android.app.TaskStackBuilder;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
-
 import android.os.Build;
 import android.net.Uri;
-import android.util.Log;
-
 import org.json.JSONObject;
 import org.json.JSONException;
+// @TODO - For the moment change it when used on another project until is found a better solution
+import com.priusolution.infostranieri.R;
 
 public class ParsePushPluginReceiver extends ParsePushBroadcastReceiver
 {	
@@ -25,46 +22,34 @@ public class ParsePushPluginReceiver extends ParsePushBroadcastReceiver
 	
 	@Override
 	protected void onPushReceive(Context context, Intent intent) {
-        
 		super.onPushReceive(context, intent);
-        
 		JSONObject pushData = getPushData(intent);
-        
-        //
-        //
-        
 		if(pushData != null) ParsePushPlugin.javascriptECB( pushData );
-        
     }
-	
+
+    /**
+     * Enabled large icon.
+     * @param context
+     * @param intent
+     * @return
+     */
+    @Override
+    protected Bitmap getLargeIcon(Context context, Intent intent) {
+        return BitmapFactory.decodeResource(context.getResources(), R.drawable.push_icon);
+    }
+
 	@Override
     protected void onPushOpen(Context context, Intent intent) {
-        
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                
-        //
-        //
-        
         ParseAnalytics.trackAppOpenedInBackground(intent);
-
         JSONObject pushData = getPushData(intent);
-                
         String pushDataString = pushData.toString();
         String uriString = pushData.optString("uri");
-        
-        //
-        //
-
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("PUSHDATA", pushDataString); // Storing string
         editor.commit(); // Commit changes
-        
-        //
-        
         Class<? extends Activity> cls = getActivity(context, intent);
-        
         Intent activityIntent;
-        
         if (!uriString.isEmpty()) {
             activityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uriString));
         } else {
@@ -83,13 +68,10 @@ public class ParsePushPluginReceiver extends ParsePushBroadcastReceiver
             activityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             context.startActivity(activityIntent);
         }
-
     }
 	
 	private static JSONObject getPushData(Intent intent){
-        
 		JSONObject pushData = null;
-		
         try {
             pushData = new JSONObject(intent.getStringExtra("com.parse.Data"));
         } catch (JSONException e) {
