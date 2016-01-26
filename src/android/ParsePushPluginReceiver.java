@@ -3,6 +3,8 @@ package org.apache.cordova.core;
 import com.parse.ParsePushBroadcastReceiver;
 import com.parse.ParseAnalytics;
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
