@@ -13,11 +13,9 @@ import android.os.Build;
 import android.net.Uri;
 import org.json.JSONObject;
 import org.json.JSONException;
-// @TODO - For the moment change it when used on another project until is found a better solution
-import com.priusolution.infostranieri.R;
+import com.priusolution.infostranieri.R; // @TODO - For the moment change it when used on another project until is found a better solution
 
-public class ParsePushPluginReceiver extends ParsePushBroadcastReceiver
-{	
+public class ParsePushPluginReceiver extends ParsePushBroadcastReceiver {
 	public static final String LOGTAG = "ParsePushPluginReceiver";
 	
 	@Override

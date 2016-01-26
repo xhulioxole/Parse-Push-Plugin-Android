@@ -2,24 +2,20 @@ package org.apache.cordova.core;
 
 import java.util.List;
 import java.lang.Exception;
-
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
-
 import com.parse.Parse;
 import com.parse.ParsePush;
 import com.parse.ParseInstallation;
-
 import android.util.Log;
 
 public class ParsePushPlugin extends CordovaPlugin {
@@ -137,7 +133,6 @@ public class ParsePushPlugin extends CordovaPlugin {
         editor.putString("PUSHDATA", ""); // Storing string
         editor.commit(); // Commit changes
         return pushDataString;
-        
     }
     
     public static void javascriptECB (JSONObject _json) {
