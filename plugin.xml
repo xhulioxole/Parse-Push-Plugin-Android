@@ -17,7 +17,7 @@
             </feature>
         </config-file>
         
-        <config-file target="AndroidManifest.xml" parent="/manifest/application" android:name="com.priusolution.ParseInit">
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
             <service android:name="com.parse.PushService" />
             <receiver android:exported="false" android:name="org.apache.cordova.core.ParsePushPluginReceiver">
                 <intent-filter>
