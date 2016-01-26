@@ -53,6 +53,7 @@
         <source-file src="src/android/parse-1.8.0/bolts-android-1.1.4.jar" target-dir="libs" framework="true" />
         <source-file src="src/android/ParsePushPlugin.java" target-dir="src/org/apache/cordova/core" />
         <source-file src="src/android/ParsePushPluginReceiver.java" target-dir="src/org/apache/cordova/core" />
+        <source-file src="src/android/ParseInit.java" target-dir="src/org/apache/cordova/core" />
      </platform>
 
 </plugin>
